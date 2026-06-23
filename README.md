@@ -2,7 +2,7 @@
 
 **Five agents. One orchestrator. Ship anything.**
 
-Octopus turns [OpenCode](https://opencode.ai) into a five-agent team. You are the **Purple Manager** — you decompose tasks, dispatch specialist agents, enforce quality gates between stages, and synthesize results.
+Octopus turns [OpenCode](https://opencode.ai) into a five-agent team. You are the **Purple Manager** - you decompose tasks, dispatch specialist agents, enforce quality gates between stages, and synthesise results.
 
 ```
    ___   ____ _____ ___  ____  _   _ ____
@@ -95,7 +95,7 @@ Each stage takes the previous stage's output as input. Use when work is dependen
 
 ### Parallel Fan-out
 ```
-Manager → [Agent A, Agent B, Agent C] → Manager synthesizes
+Manager → [Agent A, Agent B, Agent C] → Manager synthesises
 ```
 Independent tasks run simultaneously. Use for speed.
 
@@ -184,8 +184,8 @@ source ~/.zshrc
 Octopus is a prompt-based orchestration framework. The system prompt (`octopus.md` or `OPENER.md`) instructs the AI to act as a Purple Manager who delegates to specialist subagents. Coordination happens through:
 
 - **Structured spawn templates** — Copy-paste prompts for dispatching each agent type
-- **Handoff documents** — Standardized format for passing work between agents
-- **Filesystem state** — `.octopus/` directory for state tracking and artifacts
+- **Handoff documents** — Standardised format for passing work between agents
+- **Filesystem state** — `.octopus/` directory for state tracking and artefacts
 - **Quality gates** — Explicit checks at every pipeline transition
 
 The framework is platform-agnostic and works with any AI coding terminal that supports tool use and subagent dispatch.
