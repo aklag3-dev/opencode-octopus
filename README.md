@@ -1,4 +1,4 @@
-# 🐙 Octopus — Multi-Agent Orchestration OS for OpenCode
+# 🐙 Octopus: Multi-Agent Orchestration OS for OpenCode
 
 **Five agents. One orchestrator. Ship anything.**
 
