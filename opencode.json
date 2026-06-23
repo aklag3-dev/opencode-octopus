@@ -1,0 +1,85 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["OPENER.md"],
+  "default_agent": "manager",
+
+  "agent": {
+    "researcher": {
+      "description": "Yellow Researcher & Analyst — intelligence gathering, analysis, evaluation",
+      "mode": "subagent",
+      "model": "openai/gpt-4o-mini",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "webfetch": "allow", "websearch": "allow", "bash": { "grep *": "allow", "find *": "allow", "curl *": "allow", "*": "deny" }, "edit": "deny" }
+    },
+    "designer": {
+      "description": "Red-Orange Designer — solutions, architecture, wireframes, design specs",
+      "mode": "subagent",
+      "model": "openai/gpt-4o",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": "deny" }
+    },
+    "maker": {
+      "description": "Blue Maker — code, infrastructure, deployment, testing",
+      "mode": "subagent",
+      "model": "openai/gpt-4o",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": { "npm *": "allow", "git *": "allow", "node *": "allow", "python *": "allow", "mkdir *": "allow", "cp *": "allow", "mv *": "allow", "rm *": "allow", "*": "ask" } }
+    },
+    "marketer": {
+      "description": "Green Marketer — copywriting, campaigns, growth assets, distribution drafts",
+      "mode": "subagent",
+      "model": "openai/gpt-4o-mini",
+      "permission": { "read": "allow", "write": "allow", "edit": "allow", "websearch": "allow", "bash": "deny" }
+    },
+    "manager": {
+      "description": "Purple Manager (the Octopus) — orchestrates agents, enforces quality gates, synthesizes results",
+      "mode": "all",
+      "model": "openai/gpt-4o",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": "allow", "webfetch": "allow", "websearch": "allow", "task": "allow" }
+    }
+  },
+
+  "command": {
+    "research": {
+      "description": "Spawn Yellow Researcher agent (Scout mode) to investigate a topic",
+      "agent": "manager",
+      "template": "Interpret this as a command to spawn the Yellow Researcher agent. Decompose the task, dispatch the researcher subagent with clear scope and output format, then synthesize the results.\n\nUser request: research $ARGUMENTS"
+    },
+    "evaluate": {
+      "description": "Spawn Yellow Analyst agent (Evaluate mode) to grade a live product",
+      "agent": "manager",
+      "template": "Interpret this as a command to spawn the Yellow Analyst agent in Evaluate mode. Decompose the task, dispatch the analyst subagent to evaluate the target, then synthesize the results.\n\nUser request: evaluate $ARGUMENTS"
+    },
+    "design": {
+      "description": "Spawn Red-Orange Designer agent to create solutions",
+      "agent": "manager",
+      "template": "Interpret this as a command to spawn the Red-Orange Designer agent. Decompose the task, dispatch the designer subagent with clear scope, then synthesize the results.\n\nUser request: design $ARGUMENTS"
+    },
+    "build": {
+      "description": "Spawn Blue Maker agent to build from a spec",
+      "agent": "manager",
+      "template": "Interpret this as a command to spawn the Blue Maker agent. Decompose the task, dispatch the maker subagent with the spec, then synthesize the results.\n\nUser request: build $ARGUMENTS"
+    },
+    "market": {
+      "description": "Spawn Green Marketer agent for distribution and copy",
+      "agent": "manager",
+      "template": "Interpret this as a command to spawn the Green Marketer agent. Decompose the task, dispatch the marketer subagent, then synthesize the results.\n\nUser request: market $ARGUMENTS"
+    },
+    "sprint": {
+      "description": "Full pipeline: research > design > build > market",
+      "agent": "manager",
+      "template": "Interpret this as a command to run a full sprint pipeline. Decompose the goal, then run agents sequentially: first Researcher, then Designer, then Maker, then Marketer. Enforce quality gates between each stage. Synthesize the final results.\n\nUser request: sprint $ARGUMENTS"
+    },
+    "team": {
+      "description": "Parallel fan-out to multiple agents simultaneously",
+      "agent": "manager",
+      "template": "Interpret this as a command to fan out work to multiple agents in parallel. Decompose the tasks, dispatch all relevant agents simultaneously, collect results, then synthesize.\n\nUser request: team $ARGUMENTS"
+    },
+    "review": {
+      "description": "Review loop between two agents for iterative refinement",
+      "agent": "manager",
+      "template": "Interpret this as a command to run a review loop. Set up an iterative refinement cycle between two agents. Cap at 3-5 iterations. Synthesize the final approved output.\n\nUser request: review $ARGUMENTS"
+    },
+    "help": {
+      "description": "Show the Octopus agent roster and available commands",
+      "template": "Display the Octopus greeting: the 5-line ASCII art banner, the agent roster with colors and roles, all available commands with descriptions, and a prompt asking what the user wants to orchestrate."
+    }
+  }
+}

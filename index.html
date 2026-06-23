@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Octopus — Multi-Agent Orchestration OS for OpenCode</title>
+<meta name="description" content="Five agents. One orchestrator. Ship anything. Multi-agent orchestration OS for OpenCode.">
+<meta property="og:title" content="Octopus — Multi-Agent Orchestration OS">
+<meta property="og:description" content="Five agents. One orchestrator. Ship anything. Turn OpenCode into a five-agent team.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/anomalyco/opencode-octopus">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#7c3aed">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🐙</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #7c3aed;
+  --purple-light: #a78bfa;
+  --purple-dark: #5b21b6;
+  --yellow: #f59e0b;
+  --orange: #f97316;
+  --blue: #3b82f6;
+  --green: #22c55e;
+  --bg: #ffffff;
+  --bg-alt: #f8fafc;
+  --bg-card: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 1200px;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --nav-bg: rgba(255,255,255,0.8);
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0f;
+  --bg-alt: #12121a;
+  --bg-card: #1a1a26;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #1e1e2e;
+  --border-light: #16161f;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+  --nav-bg: rgba(10,10,15,0.8);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.6;transition:background 0.3s,color 0.3s}
+a{color:var(--purple);text-decoration:none;transition:color 0.2s}
+a:hover{color:var(--purple-light)}
+img{max-width:100%;height:auto}
+code{font-family:var(--font-mono);font-size:0.9em;background:var(--bg-alt);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+pre{font-family:var(--font-mono);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;overflow-x:auto;font-size:0.85rem;line-height:1.5;margin:1rem 0}
+pre code{background:none;padding:0;border:none}
+
+.container{max-width:var(--max-width);margin:0 auto;padding:0 1.5rem}
+
+/* Navigation */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:background 0.3s}
+nav .container{display:flex;align-items:center;justify-content:space-between;height:60px}
+nav .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.1rem;color:var(--text)}
+nav .logo span{font-size:1.3rem}
+nav .nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+nav .nav-links a{color:var(--text-secondary);font-size:0.9rem;font-weight:500;transition:color 0.2s}
+nav .nav-links a:hover{color:var(--text)}
+nav .nav-links .cta{padding:8px 16px;background:var(--purple);color:#fff!important;border-radius:var(--radius-sm);font-weight:600}
+nav .nav-links .cta:hover{background:var(--purple-dark);color:#fff!important}
+.theme-toggle{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;cursor:pointer;color:var(--text-secondary);font-size:1rem;transition:all 0.2s}
+.theme-toggle:hover{color:var(--text);border-color:var(--text-muted)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;padding:4px}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding:80px 0 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.08) 0%, transparent 50%),radial-gradient(ellipse at 80% 50%, rgba(59,130,246,0.06) 0%, transparent 50%);pointer-events:none}
+.hero .container{position:relative;z-index:1}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.hero-content{animation:fadeUp 0.8s ease-out}
+.hero-badge{display:inline-block;padding:6px 14px;background:rgba(124,58,237,0.1);color:var(--purple);border-radius:100px;font-size:0.8rem;font-weight:600;margin-bottom:1.5rem;border:1px solid rgba(124,58,237,0.15);letter-spacing:0.3px}
+.hero h1{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;letter-spacing:-1px}
+.hero h1 .gradient{background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.15rem;color:var(--text-secondary);max-width:540px;margin-bottom:2rem;line-height:1.7}
+.hero-buttons{display:flex;gap:1rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:0.95rem;transition:all 0.2s;cursor:pointer;border:none}
+.btn-primary{background:var(--purple);color:#fff;box-shadow:0 4px 14px rgba(124,58,237,0.3)}
+.btn-primary:hover{background:var(--purple-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,0.4)}
+.btn-secondary{background:var(--bg-card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg-alt);border-color:var(--text-muted)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text-muted)}
+
+/* ASCII Art Hero */
+.hero-ascii{animation:fadeUp 0.8s ease-out 0.2s both}
+.ascii-art{font-family:var(--font-mono);font-size:clamp(0.45rem,1.2vw,0.75rem);line-height:1.15;white-space:pre;letter-spacing:0}
+.ascii-art .line-yellow{color:var(--yellow)}
+.ascii-art .line-orange{color:var(--orange)}
+.ascii-art .line-blue{color:var(--blue)}
+.ascii-art .line-green{color:var(--green)}
+.ascii-art .line-purple{color:var(--purple)}
+.ascii-tagline{font-family:var(--font-mono);font-size:0.8rem;color:var(--purple);margin-top:1rem;padding:0.75rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);display:inline-block}
+
+/* Pipeline Animation */
+.pipeline-viz{display:flex;align-items:center;gap:6px;margin-top:2rem;padding:1rem 1.25rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);flex-wrap:nowrap;overflow-x:auto;font-family:var(--font-mono);font-size:0.7rem}
+.pipeline-viz .stage{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;white-space:nowrap}
+.pipeline-viz .stage .label{font-size:0.55rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;color:var(--text-muted)}
+.pipeline-viz .stage .name{font-weight:700;font-size:0.75rem}
+.pipeline-viz .stage.yellow .name{color:var(--yellow)}
+.pipeline-viz .stage.orange .name{color:var(--orange)}
+.pipeline-viz .stage.blue .name{color:var(--blue)}
+.pipeline-viz .stage.green .name{color:var(--green)}
+.pipeline-viz .stage.purple .name{color:var(--purple)}
+.pipeline-viz .arrow{color:var(--text-muted);font-size:0.8rem;flex-shrink:0}
+
+/* Section styling */
+section{padding:80px 0}
+.section-label{display:inline-block;padding:4px 12px;background:rgba(124,58,237,0.08);color:var(--purple);border-radius:100px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:1rem}
+.section-title{font-size:clamp(1.8rem,3vw,2.5rem);font-weight:800;margin-bottom:0.75rem;letter-spacing:-0.5px}
+.section-desc{color:var(--text-secondary);font-size:1.05rem;max-width:600px;margin-bottom:3rem;line-height:1.7}
+
+/* Agents section */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem}
+.agent-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;transition:all 0.3s;position:relative;overflow:hidden}
+.agent-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.agent-card.yellow::before{background:var(--yellow)}
+.agent-card.orange::before{background:var(--orange)}
+.agent-card.blue::before{background:var(--blue)}
+.agent-card.green::before{background:var(--green)}
+.agent-card.purple::before{background:var(--purple)}
+.agent-card .agent-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.agent-card .agent-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+.agent-card.yellow .agent-dot{background:var(--yellow)}
+.agent-card.orange .agent-dot{background:var(--orange)}
+.agent-card.blue .agent-dot{background:var(--blue)}
+.agent-card.green .agent-dot{background:var(--green)}
+.agent-card.purple .agent-dot{background:var(--purple)}
+.agent-card .agent-name{font-weight:700;font-size:1.1rem}
+.agent-card .agent-role{color:var(--text-secondary);font-size:0.9rem;margin-bottom:0.75rem}
+.agent-card .agent-desc{color:var(--text-secondary);font-size:0.9rem;line-height:1.6}
+.agent-card .agent-meta{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap}
+.agent-card .agent-meta span{font-size:0.75rem;padding:3px 10px;background:var(--bg-alt);border:1px solid var(--border);border-radius:100px;color:var(--text-secondary);font-weight:500}
+
+/* Features */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.feature-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;transition:all 0.3s}
+.feature-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.feature-card .icon{font-size:1.75rem;margin-bottom:0.75rem;display:block}
+.feature-card h3{font-size:1.05rem;font-weight:700;margin-bottom:0.5rem}
+.feature-card p{color:var(--text-secondary);font-size:0.9rem;line-height:1.6}
+
+/* Patterns */
+.patterns-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.pattern-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;font-family:var(--font-mono);font-size:0.85rem;line-height:1.7}
+.pattern-card h3{font-family:var(--font-sans);font-size:1.05rem;font-weight:700;margin-bottom:0.75rem}
+.pattern-card .pattern-desc{font-family:var(--font-sans);color:var(--text-secondary);font-size:0.9rem;margin-top:0.75rem}
+
+/* Install */
+.install-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.install-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;position:relative}
+.install-card .step-num{position:absolute;top:-10px;left:1.25rem;background:var(--purple);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700}
+.install-card h3{font-size:1.05rem;font-weight:700;margin-bottom:0.75rem;margin-top:0.25rem}
+.install-card p{color:var(--text-secondary);font-size:0.9rem;line-height:1.6;margin-bottom:0.75rem}
+.install-card pre{margin:0;font-size:0.8rem}
+
+/* Commands table */
+.commands-table{width:100%;border-collapse:collapse;font-size:0.9rem}
+.commands-table th{text-align:left;padding:0.75rem 1rem;background:var(--bg-alt);border-bottom:2px solid var(--border);font-weight:600;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted)}
+.commands-table td{padding:0.75rem 1rem;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.commands-table tr:hover td{background:var(--bg-alt)}
+.commands-table code{font-size:0.85rem;color:var(--text);font-weight:500}
+
+/* Orchestration modes diagram */
+.orchestration-viz{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;margin:2rem 0}
+.orch-mode{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;text-align:center}
+.orch-mode h3{font-size:1rem;font-weight:700;margin-bottom:0.75rem}
+.orch-mode .mode-dia{font-family:var(--font-mono);font-size:0.8rem;line-height:1.6;padding:1rem;background:var(--bg-alt);border:1px solid var(--border-light);border-radius:var(--radius-sm);margin-bottom:0.75rem}
+.orch-mode p{color:var(--text-secondary);font-size:0.85rem;line-height:1.5}
+
+/* Footer */
+footer{padding:40px 0;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:0.85rem}
+footer a{color:var(--text-secondary)}
+footer a:hover{color:var(--purple)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.fade-up{opacity:0;transform:translateY(20px);transition:all 0.6s ease-out}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* Responsive */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:2rem}
+  .hero-ascii{order:-1}
+  .ascii-art{font-size:0.5rem}
+  .pipeline-viz{font-size:0.6rem}
+  nav .nav-links{display:none}
+  .mobile-menu-btn{display:block}
+  nav .nav-links.open{display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--border);padding:1rem;gap:1rem;box-shadow:var(--shadow-lg)}
+}
+@media(max-width:600px){
+  .hero h1{font-size:2rem}
+  .hero p{font-size:1rem}
+  .agents-grid,.features-grid,.patterns-grid,.install-steps{grid-template-columns:1fr}
+  .commands-table{font-size:0.8rem}
+  .commands-table th,.commands-table td{padding:0.5rem 0.75rem}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="container">
+    <a href="#" class="logo"><span>🐙</span> Octopus</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#patterns">Patterns</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://github.com/anomalyco/opencode-octopus" class="cta">GitHub</a></li>
+      <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button></li>
+    </ul>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <span class="hero-badge">🐙 OpenCode Edition</span>
+        <h1>Turn OpenCode into a <span class="gradient">five-agent team</span>.</h1>
+        <p>Octopus is a multi-agent orchestration OS for OpenCode. You are the Purple Manager — you decompose tasks, dispatch specialist agents, enforce quality gates, and synthesize results.</p>
+        <div class="hero-buttons">
+          <a href="#install" class="btn btn-primary">Get Started</a>
+          <a href="https://github.com/anomalyco/opencode-octopus" class="btn btn-secondary">Star on GitHub</a>
+        </div>
+        <div class="pipeline-viz">
+          <div class="stage yellow"><span class="label">Research</span><span class="name">Researcher</span></div>
+          <span class="arrow">→</span>
+          <div class="stage orange"><span class="label">Design</span><span class="name">Designer</span></div>
+          <span class="arrow">→</span>
+          <div class="stage blue"><span class="label">Build</span><span class="name">Maker</span></div>
+          <span class="arrow">→</span>
+          <div class="stage green"><span class="label">Market</span><span class="name">Marketer</span></div>
+          <span class="arrow">→</span>
+          <div class="stage purple"><span class="label">Orchestrate</span><span class="name">Manager</span></div>
+        </div>
+      </div>
+      <div class="hero-ascii">
+        <div class="ascii-art">
+<span class="line-yellow">   ___   ____ _____ ___  ____  _   _ ____</span>
+<span class="line-orange">  / _ \ / ___|_   _/ _ \|  _ \| | | / ___|</span>
+<span class="line-blue"> | | | | |     | || | | | |_) | | | \___ \</span>
+<span class="line-green"> | |_| | |___  | || |_| |  __/| |_| |___) |</span>
+<span class="line-purple">  \___/ \____| |_| \___/|_|    \___/|____/</span>
+        </div>
+        <div class="ascii-tagline">Multi-Agent Orchestration OS + OpenCode</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="agents" style="background:var(--bg-alt)">
+  <div class="container">
+    <span class="section-label">The Five Agents</span>
+    <h2 class="section-title">Real boundaries, not prose pleas.</h2>
+    <p class="section-desc">Each agent has a defined role, strict scope boundaries, and tool-level enforcement. Tool allowlists are the enforcement layer; prose is not.</p>
+    <div class="agents-grid">
+      <div class="agent-card yellow">
+        <div class="agent-header"><div class="agent-dot"></div><span class="agent-name">Researcher &amp; Analyst</span></div>
+        <div class="agent-role">Yellow · Intelligence</div>
+        <div class="agent-desc">Scout mode discovers opportunities and synthesizes research. Evaluate mode grades live products with a KILL/PIVOT/SCALE verdict.</div>
+        <div class="agent-meta"><span>WebSearch</span><span>Read</span><span>Analysis</span></div>
+      </div>
+      <div class="agent-card orange">
+        <div class="agent-header"><div class="agent-dot"></div><span class="agent-name">Designer</span></div>
+        <div class="agent-role">Red-Orange · Solutions</div>
+        <div class="agent-desc">UX flows, system architecture, wireframes, and design specs. Translates research into actionable blueprints.</div>
+        <div class="agent-meta"><span>Write</span><span>Edit</span><span>Diagrams</span></div>
+      </div>
+      <div class="agent-card blue">
+        <div class="agent-header"><div class="agent-dot"></div><span class="agent-name">Maker</span></div>
+        <div class="agent-role">Blue · Building</div>
+        <div class="agent-desc">Code, tests, deployment. Works from specs; never redesigns without approval. Ships working systems.</div>
+        <div class="agent-meta"><span>Bash</span><span>Code</span><span>Deploy</span></div>
+      </div>
+      <div class="agent-card green">
+        <div class="agent-header"><div class="agent-dot"></div><span class="agent-name">Marketer</span></div>
+        <div class="agent-role">Green · Distribution</div>
+        <div class="agent-desc">Copywriting, campaigns, growth assets, email sequences. Drafts distribution at high volume and low cost.</div>
+        <div class="agent-meta"><span>Copy</span><span>SEO</span><span>Campaigns</span></div>
+      </div>
+      <div class="agent-card purple">
+        <div class="agent-header"><div class="agent-dot"></div><span class="agent-name">Manager</span></div>
+        <div class="agent-role">Purple · Orchestration</div>
+        <div class="agent-desc">Decomposes tasks, dispatches agents, enforces quality gates, synthesizes outputs. If Purple is writing code, something is wrong.</div>
+        <div class="agent-meta"><span>Orchestrate</span><span>Delegate</span><span>Synthesize</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">Orchestration as code.</h2>
+    <p class="section-desc">Smart defaults, strong boundaries, and tool-level enforcement — not prose pleas.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">🎯</span>
+        <h3>Contract-First Delegation</h3>
+        <p>Every agent gets success criteria, scope boundaries, output format, and escalation triggers before starting.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">⚡</span>
+        <h3>Three Orchestration Modes</h3>
+        <p>Sequential pipelines, parallel fan-outs, review loops. Mix and match for any workflow.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🛡️</span>
+        <h3>Quality Gates</h3>
+        <p>Enforced checks between every stage: Research→Design, Design→Build, Build→Deploy, Deploy→Market.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📁</span>
+        <h3>Filesystem Ground Truth</h3>
+        <p>All outputs written to disk. Status files prevent loading incomplete work. Survives context resets.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🎨</span>
+        <h3>Five Agent Colors</h3>
+        <p>Yellow, Red-Orange, Blue, Green, Purple — each with distinct role, tools, and permissions.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🧠</span>
+        <h3>Venture Metaskill</h3>
+        <p>Discover micro-tool opportunities, build, launch, and evaluate. Hunt mode + Harvest mode.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="patterns" style="background:var(--bg-alt)">
+  <div class="container">
+    <span class="section-label">Orchestration</span>
+    <h2 class="section-title">Three modes. Infinite combinations.</h2>
+    <p class="section-desc">Choose the right pattern for your workflow. Patterns compose for complex pipelines.</p>
+    <div class="orchestration-viz">
+      <div class="orch-mode">
+        <h3>📋 Sequential Pipeline</h3>
+        <div class="mode-dia">Researcher → Designer → Maker → Marketer</div>
+        <p>Each stage depends on the previous. Use when work is naturally sequential.</p>
+      </div>
+      <div class="orch-mode">
+        <h3>🔀 Parallel Fan-out</h3>
+        <div class="mode-dia">Manager → [Agent A, Agent B, Agent C] → Manager</div>
+        <p>Independent tasks run simultaneously. Manager collects and synthesizes.</p>
+      </div>
+      <div class="orch-mode">
+        <h3>🔄 Review Loop</h3>
+        <div class="mode-dia">Builder → Reviewer → Builder → ... (max 5 rounds)</div>
+        <p>Iterative refinement between two agents. Use when quality matters most.</p>
+      </div>
+    </div>
+
+    <h3 style="margin:2rem 0 1rem;font-size:1.1rem">Available Commands</h3>
+    <div style="overflow-x:auto">
+      <table class="commands-table">
+        <thead>
+          <tr><th>Command</th><th>What Happens</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>research [topic]</code></td><td>Spawn Yellow Researcher (Scout mode)</td></tr>
+          <tr><td><code>evaluate [target]</code></td><td>Spawn Yellow Analyst (Evaluate mode)</td></tr>
+          <tr><td><code>design [brief]</code></td><td>Spawn Red-Orange Designer</td></tr>
+          <tr><td><code>build [spec]</code></td><td>Spawn Blue Maker</td></tr>
+          <tr><td><code>market [product]</code></td><td>Spawn Green Marketer</td></tr>
+          <tr><td><code>sprint [goal]</code></td><td>Full pipeline: research → design → build → market</td></tr>
+          <tr><td><code>team [tasks]</code></td><td>Parallel fan-out to multiple agents</td></tr>
+          <tr><td><code>review [work]</code></td><td>Review loop between two agents</td></tr>
+          <tr><td><code>help</code></td><td>Show agent roster and available commands</td></tr>
+          <tr><td><code>cycle hunt [niche]</code></td><td>Venture: discover and launch a micro-tool</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="container">
+    <span class="section-label">Quick Start</span>
+    <h2 class="section-title">Try it today.</h2>
+    <p class="section-desc">Three ways to use Octopus with OpenCode.</p>
+    <div class="install-steps">
+      <div class="install-card">
+        <div class="step-num">1</div>
+        <h3>🐙 Terminal Command</h3>
+        <p>Install <code>octopus</code> as a global command. Works from any directory.</p>
+        <pre>git clone https://github.com/anomalyco/opencode-octopus
+cd opencode-octopus && bash install.sh
+source ~/.zshrc
+octopus</pre>
+      </div>
+      <div class="install-card">
+        <div class="step-num">2</div>
+        <h3>📁 Project Mode</h3>
+        <p>Clone and open with OpenCode. <code>OPENER.md</code> loads automatically.</p>
+        <pre>git clone https://github.com/anomalyco/opencode-octopus
+cd opencode-octopus && opencode</pre>
+      </div>
+      <div class="install-card">
+        <div class="step-num">3</div>
+        <h3>📄 Any LLM Terminal</h3>
+        <p>Add <code>octopus.md</code> to your system prompt or project context. Works with Claude Code, Codex CLI, Gemini CLI, and more.</p>
+        <pre># In your opencode.json:
+"instructions": ["octopus.md"]</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="safety" style="background:var(--bg-alt)">
+  <div class="container">
+    <span class="section-label">Safety</span>
+    <h2 class="section-title">Zero config collision.</h2>
+    <p class="section-desc">Octopus ships no hooks, no settings changes, no config overrides.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="icon">🔒</span>
+        <h3>No Global Installation</h3>
+        <p>Installs under <code>~/.config/opencode/octopus/</code>. Never touches your existing config.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🛡️</span>
+        <h3>Least Privilege</h3>
+        <p>Each agent has exactly the tools it needs. Tool allowlists are the enforcement layer.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🚫</span>
+        <h3>No Autonomous Distribution</h3>
+        <p>The Marketer drafts; a human sends. This is a permanent architectural gate, not a setting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <p>Octopus for OpenCode — based on <a href="https://github.com/victordelrosal/octopus">Octopus</a> by <a href="https://victordelrosal.com">Victor del Rosal</a> / <a href="https://fiveinnolabs.com">fiveinnolabs</a></p>
+    <p style="margin-top:0.5rem">License: Open. Use it to ship faster. 🐙</p>
+  </div>
+</footer>
+
+<script>
+// Theme management
+const themeToggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+
+function getPreferredTheme() {
+  const stored = localStorage.getItem('theme');
+  if (stored) return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function setTheme(theme) {
+  html.setAttribute('data-theme', theme);
+  themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem('theme', theme);
+}
+
+const currentTheme = getPreferredTheme();
+setTheme(currentTheme);
+
+themeToggle.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  setTheme(next);
+});
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (!localStorage.getItem('theme')) {
+    setTheme(e.matches ? 'dark' : 'light');
+  }
+});
+
+// Mobile menu
+const mobileBtn = document.getElementById('mobileMenuBtn');
+const navLinks = document.getElementById('navLinks');
+mobileBtn.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+// Intersection observer for fade-up animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// Stagger card animations
+document.querySelectorAll('.agent-card, .feature-card, .pattern-card, .install-card').forEach((el, i) => {
+  el.classList.add('fade-up');
+  el.style.transitionDelay = `${i * 0.06}s`;
+  observer.observe(el);
+});
+
+// Close mobile menu on link click
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+</script>
+</body>
+</html>
