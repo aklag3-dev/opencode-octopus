@@ -183,10 +183,10 @@ source ~/.zshrc
 
 Octopus is a prompt-based orchestration framework. The system prompt (`octopus.md` or `OPENER.md`) instructs the AI to act as a Purple Manager who delegates to specialist subagents. Coordination happens through:
 
-- **Structured spawn templates** — Copy-paste prompts for dispatching each agent type
-- **Handoff documents** — Standardised format for passing work between agents
-- **Filesystem state** — `.octopus/` directory for state tracking and artefacts
-- **Quality gates** — Explicit checks at every pipeline transition
+- **Structured spawn templates** - Copy-paste prompts for dispatching each agent type
+- **Handoff documents** - Standardised format for passing work between agents
+- **Filesystem state** - `.octopus/` directory for state tracking and artefacts
+- **Quality gates** - Explicit checks at every pipeline transition
 
 The framework is platform-agnostic and works with any AI coding terminal that supports tool use and subagent dispatch.
 
