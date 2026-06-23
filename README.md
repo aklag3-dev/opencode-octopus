@@ -192,7 +192,7 @@ The framework is platform-agnostic and works with any AI coding terminal that su
 
 ## Credits
 
-Based on [Octopus](https://github.com/victordelrosal/octopus) by [Victor del Rosal](https://victordelrosal.com) / [fiveinnolabs](https://fiveinnolabs.com). Built on frameworks from Google DeepMind (Intelligent AI Delegation), Claude Code (Agent Teams), and the Five Innovators model. Adapted for [OpenCode](https://opencode.ai).
+Based on [Octopus v3](https://github.com/victordelrosal/octopus) by [Victor del Rosal](https://victordelrosal.com) / [fiveinnolabs](https://fiveinnolabs.com). Built on frameworks from Google DeepMind (Intelligent AI Delegation), Claude Code (Agent Teams), and the Five Innovators model. Adapted for [OpenCode](https://opencode.ai).
 
 ## License
 
