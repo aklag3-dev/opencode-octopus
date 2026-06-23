@@ -98,36 +98,59 @@ octopus() {
     bash "$HOME/.config/opencode/octopus/octopus-banner.sh"
   fi
 
-  # Launch OpenCode with OPENER.md as instructions
-  # The OPENER.md file tells opencode to act as the Purple Manager
-  if [[ -f "$HOME/.config/opencode/octopus/OPENER.md" ]]; then
-    opencode --instructions "$HOME/.config/opencode/octopus/OPENER.md" "$@"
-  else
-    opencode "$@"
-  fi
+  # Launch OpenCode — global config at ~/.config/opencode/opencode.json
+  # loads OPENER.md as instructions and registers all 5 agents
+  opencode "$@"
 }
 # <<< octopus-opencode <<<
 SHELL_BLOCK
   echo -e "${GREEN}        Added to $SHELL_CONFIG_NAME${RESET}"
 fi
 
-# Step 3: Skip opencode.json merge (user does this manually)
-echo -e "${BLUE}  [3/4]${RESET} Configuring opencode"
+# Step 3: Install global opencode.json config
+echo -e "${BLUE}  [3/4]${RESET} Installing global opencode config"
 
-echo -e "${YELLOW}  To use Octopus agents as opencode subagents, merge this"
-echo -e "${YELLOW}  into your project's opencode.json:" 
-echo ""
-echo -e "${DIM}  {"
-echo -e "${DIM}    \"instructions\": [\"OPENER.md\"],"
-echo -e "${DIM}    \"agent\": {"
-echo -e "${DIM}      \"researcher\": { \"mode\": \"subagent\", \"model\": \"openai/gpt-4o-mini\" },"
-echo -e "${DIM}      \"designer\":   { \"mode\": \"subagent\", \"model\": \"openai/gpt-4o\" },"
-echo -e "${DIM}      \"maker\":      { \"mode\": \"subagent\", \"model\": \"openai/gpt-4o\" },"
-echo -e "${DIM}      \"marketer\":   { \"mode\": \"subagent\", \"model\": \"openai/gpt-4o-mini\" },"
-echo -e "${DIM}      \"manager\":    { \"mode\": \"all\", \"model\": \"openai/gpt-4o\" }"
-echo -e "${DIM}    }"
-echo -e "${DIM}  }${RESET}"
-echo ""
+GLOBAL_CONFIG="$HOME/.config/opencode/opencode.json"
+if [[ -f "$GLOBAL_CONFIG" ]]; then
+  echo -e "${YELLOW}        $GLOBAL_CONFIG already exists (skipping)${RESET}"
+  echo -e "${DIM}        To configure manually, add to your opencode.json:${RESET}"
+  echo -e "${DIM}        { \"instructions\": [\"~/.config/opencode/octopus/OPENER.md\"], \"agent\": { ... } }${RESET}"
+else
+  cat > "$GLOBAL_CONFIG" << 'GLOBAL'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["~/.config/opencode/octopus/OPENER.md"],
+  "agent": {
+    "researcher": {
+      "description": "Yellow Researcher & Analyst — intelligence gathering, analysis, evaluation",
+      "mode": "subagent",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "webfetch": "allow", "websearch": "allow", "bash": { "grep *": "allow", "find *": "allow", "curl *": "allow", "*": "deny" }, "edit": "deny" }
+    },
+    "designer": {
+      "description": "Red-Orange Designer — solutions, architecture, wireframes, design specs",
+      "mode": "subagent",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": "deny" }
+    },
+    "maker": {
+      "description": "Blue Maker — code, infrastructure, deployment, testing",
+      "mode": "subagent",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": { "npm *": "allow", "git *": "allow", "node *": "allow", "python *": "allow", "mkdir *": "allow", "cp *": "allow", "mv *": "allow", "rm *": "allow", "*": "ask" } }
+    },
+    "marketer": {
+      "description": "Green Marketer — copywriting, campaigns, growth assets, distribution drafts",
+      "mode": "subagent",
+      "permission": { "read": "allow", "write": "allow", "edit": "allow", "websearch": "allow", "bash": "deny" }
+    },
+    "manager": {
+      "description": "Purple Manager (the Octopus) — orchestrates agents, enforces quality gates, synthesizes results",
+      "mode": "all",
+      "permission": { "read": "allow", "glob": "allow", "grep": "allow", "write": "allow", "edit": "allow", "bash": "allow", "webfetch": "allow", "websearch": "allow", "task": "allow" }
+    }
+  }
+}
+GLOBAL
+  echo -e "${GREEN}        Created $GLOBAL_CONFIG${RESET}"
+fi
 
 # Step 4: Done
 echo -e "${BLUE}  [4/4]${RESET} Verifying installation"
